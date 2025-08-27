@@ -4,9 +4,9 @@ let soils = [];
 
 function loadCSVs() {
   Promise.all([
-    fetch('samples.csv').then(r => r.text()),
-    fetch('runs.csv').then(r => r.text()),
-    fetch('soil.csv').then(r => r.text())
+    fetch('data/samples.csv').then(r => r.text()),
+    fetch('data/runs.csv').then(r => r.text()),
+    fetch('data/soil.csv').then(r => r.text())
   ]).then(([samp, run, soil]) => {
     samples = Papa.parse(samp, { header: true }).data.filter(d => d.sample_id);
     runs = Papa.parse(run, { header: true }).data.filter(d => d.sample_id);
@@ -74,3 +74,4 @@ document.getElementById('filterBtn').addEventListener('click', () => {
 });
 
 window.onload = loadCSVs;
+
