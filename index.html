@@ -2,15 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sample Explorer Demo</title>
+  <title>Metadata Explorer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- DataTables CSS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" href="style.css">
+
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.5/dist/leaflet.css"/>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #filters {
+      margin-bottom: 20px;
+    }
+    #map {
+      height: 400px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Sample Explorer Demo</h1>
+  <h1>Sample Metadata Explorer</h1>
 
-  <div>
+  <!-- Filters -->
+  <div id="filters">
     <label>Filter by marker:
       <select id="markerFilter">
         <option value="">All</option>
@@ -24,13 +43,20 @@
     </label>
   </div>
 
+  <!-- Table -->
   <table id="samples" class="display" style="width:100%"></table>
-  <div id="map" style="height:400px; margin-top:20px;"></div>
 
+  <!-- Map -->
+  <div id="map"></div>
+
+  <!-- jQuery (required by DataTables) -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- DataTables -->
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+  <!-- PapaParse for CSV -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.5/dist/leaflet.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.5/dist/lea
