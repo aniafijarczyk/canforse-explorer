@@ -1,45 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Metadata Explorer</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  <script src="script.js" defer></script>
+  <meta charset="utf-8">
+  <title>Sample Metadata Filter</title>
 </head>
 <body>
-  <h1>Sample Metadata Explorer</h1>
+  <h1>Filter Samples</h1>
 
-  <label for="forestType">Forest type:</label>
-  <select id="forestType">
-    <option value="">--any--</option>
-  </select>
+  <!-- Dropdowns -->
+  <label>Forest Type:</label>
+  <select id="forestType"></select><br><br>
 
-  <label for="primer">Primer:</label>
-  <select id="primer">
-    <option value="">--any--</option>
-  </select>
+  <label>Primer Name:</label>
+  <select id="primerName"></select><br><br>
 
-  <label for="phMin">pH min:</label>
-  <input type="number" id="phMin" step="0.1">
+  <label>Soil pH min:</label>
+  <input type="number" id="phMin" step="0.1"><br><br>
 
-  <label for="phMax">pH max:</label>
-  <input type="number" id="phMax" step="0.1">
+  <button id="filterBtn">Filter Samples</button>
 
-  <button id="filterBtn">Filter</button>
+  <h2>Matching Samples</h2>
+  <ul id="results"></ul>
 
-  <h2>Results</h2>
-  <table border="1">
-    <thead>
-      <tr>
-        <th>Sample ID</th>
-        <th>Forest Type</th>
-        <th>Primers</th>
-        <th>pH</th>
-      </tr>
-    </thead>
-    <tbody id="resultsBody">
-      <!-- rows go here -->
-    </tbody>
-  </table>
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
