@@ -44,7 +44,28 @@ document.getElementById('filterBtn').addEventListener('click', () => {
     matching = matching.filter(id => phSamples.includes(id));
   }
 
-  // Display
-  const list = document.getElementById('results');
-  list.innerHTML = matching.length ? matching.map(id => `<li>${id}</li>`).join('') : '<li>No matches</li>';
+  // Display as a table
+  const body = document.getElementById('resultsBody');
+  body.innerHTML = "";
+
+  if (matching.length === 0) {
+    body.innerHTML = `<tr><td colspan="4">No matches</td></tr>`;
+    return;
+  }
+
+  matching.forEach(id => {
+    const s = samples.find(x => x.sample_id === id);
+    const primerList = runs.filter(r => r.sample_id === id).map(r => r.primer_name);
+    const ph = soils.find(x => x.sample_id === id && x.parameter === 'pH');
+
+    const row = `
+      <tr>
+        <td>${id}</td>
+        <td>${s.forest_type || ""}</td>
+        <td>${primerList.join(", ") || ""}</td>
+        <td>${ph ? ph.value : ""}</td>
+      </tr>
+    `;
+    body.innerHTML += row;
+  });
 });
