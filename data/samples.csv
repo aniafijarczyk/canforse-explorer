@@ -1,4 +1,4 @@
-sample_id,region,latitude,longitude
-S1,Canada,45.42,-75.69
-S2,Canada,46.82,-71.21
-S3,Mexico,19.43,-99.13
+sample_id,forest_type,latitude,longitude
+S1,Boreal,46.8,-71.2
+S2,Temperate,45.4,-75.7
+S3,Boreal,53.5,-113.5
