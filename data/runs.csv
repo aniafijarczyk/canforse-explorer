@@ -1,5 +1,5 @@
-sample_id,run_id,marker,primer,instrument
-S1,R1,ITS,ITS1,Illumina
-S1,R2,16S,V4,Illumina
-S2,R3,ITS,ITS1,Illumina
-S3,R4,16S,V3,PacBio
+sample_id,primer_name,run_id
+S1,16S,r1
+S1,ITS,r2
+S2,16S,r3
+S3,ITS,r4
