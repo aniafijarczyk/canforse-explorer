@@ -4,10 +4,10 @@ let soils = [];
 
 function loadCSVs() {
   Promise.all([
-    fetch('data/samples.csv').then(r => r.text()),
-    fetch('data/runs.csv').then(r => r.text()),
-    fetch('data/soil.csv').then(r => r.text())
-  ]).then(([samp, run, soil]) => {
+  fetch('https://aniafijarczyk.github.io/canforse-explorer/data/samples.csv').then(r => r.text()),
+  fetch('https://aniafijarczyk.github.io/canforse-explorer/data/runs.csv').then(r => r.text()),
+  fetch('https://aniafijarczyk.github.io/canforse-explorer/data/soil.csv').then(r => r.text())
+]).then(([samp, run, soil]) => {
     samples = Papa.parse(samp, { header: true }).data.filter(d => d.sample_id);
     runs = Papa.parse(run, { header: true }).data.filter(d => d.sample_id);
     soils = Papa.parse(soil, { header: true }).data.filter(d => d.sample_id);
@@ -74,4 +74,5 @@ document.getElementById('filterBtn').addEventListener('click', () => {
 });
 
 window.onload = loadCSVs;
+
 
