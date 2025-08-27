@@ -2,8 +2,6 @@ let samples = [];
 let runs = [];
 let soils = [];
 
-let samples = [], runs = [], soils = [];
-
 // Load CSVs
 Promise.all([
   fetch('data/samples.csv').then(r => r.text()).then(t => Papa.parse(t, {header:true}).data),
@@ -52,6 +50,7 @@ document.getElementById('filterBtn').addEventListener('click', () => {
   const list = document.getElementById('results');
   list.innerHTML = matching.length ? matching.map(id => `<li>${id}</li>`).join('') : '<li>No matches</li>';
 });
+
 
 
 
