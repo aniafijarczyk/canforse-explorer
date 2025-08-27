@@ -20,7 +20,17 @@
   <button id="filterBtn">Filter Samples</button>
 
   <h2>Matching Samples</h2>
-  <ul id="results"></ul>
+  <table border="1" id="resultsTable">
+    <thead>
+      <tr>
+        <th>Sample ID</th>
+        <th>Forest Type</th>
+        <th>Primer(s)</th>
+        <th>Soil pH</th>
+      </tr>
+    </thead>
+    <tbody id="resultsBody"></tbody>
+  </table>
 
   <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
