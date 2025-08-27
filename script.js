@@ -71,10 +71,14 @@ $(document).ready(function(){
     if(loaded<3) return;
 
     initFilters();
+    const cols = samples.length > 0 
+      ? Object.keys(samples[0]).map(col => ({ title: col, data: col }))
+      : [];
+
     table = $('#samples').DataTable({
       data: samples,
-      columns: Object.keys(samples[0]).map(col=>({title:col,data:col})),
-      pageLength:10
+      columns: cols,
+      pageLength: 10
     });
 
     $('#markerFilter,#parameterFilter').on('change', applyFilters);
@@ -85,3 +89,4 @@ $(document).ready(function(){
   loadCSV('data/runs.csv', d=>{ runs=d; initIfReady(); });
   loadCSV('data/soil.csv', d=>{ soil=d; initIfReady(); });
 });
+
