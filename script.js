@@ -1,4 +1,5 @@
 let samples = [], runs = [], soils = [];
+let map, markers;
 
 // Load CSVs
 Promise.all([
@@ -15,10 +16,38 @@ Promise.all([
   fillDropdown('primerName', [...new Set(runs.map(d => d.primer_name))]);
 });
 
+initMap();
+addAllSamplesToMap();
+
 function fillDropdown(id, values) {
   const sel = document.getElementById(id);
   sel.innerHTML = `<option value="">-- Any --</option>` +
     values.map(v => `<option value="${v}">${v}</option>`).join('');
+}
+
+function initMap() {
+  map = L.map('map').setView([50, -95], 4); // Default center (Canada-ish)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  markers = L.layerGroup().addTo(map);
+}
+
+function addAllSamplesToMap() {
+  markers.clearLayers();
+  samples.forEach(s => {
+    if (s.latitude && s.longitude) {
+      const lat = parseFloat(s.latitude);
+      const lon = parseFloat(s.longitude);
+      if (!isNaN(lat) && !isNaN(lon)) {
+        L.marker([lat, lon])
+          .bindPopup(`<b>${s.sample_id}</b><br>${s.forest_type || ''}`)
+          .addTo(markers);
+      }
+    }
+  });
 }
 
 // Filtering
@@ -47,4 +76,19 @@ document.getElementById('filterBtn').addEventListener('click', () => {
   // Display
   const list = document.getElementById('results');
   list.innerHTML = matching.length ? matching.map(id => `<li>${id}</li>`).join('') : '<li>No matches</li>';
+  markers.clearLayers();
+  samples.filter(s => matching.includes(s.sample_id)).forEach(s => {
+    if (s.latitude && s.longitude) {
+      const lat = parseFloat(s.latitude);
+      const lon = parseFloat(s.longitude);
+      if (!isNaN(lat) && !isNaN(lon)) {
+        L.marker([lat, lon])
+          .bindPopup(`<b>${s.sample_id}</b><br>${s.forest_type || ''}`)
+          .addTo(markers);
+      }
+    }
+  });
 });
+
+
+
