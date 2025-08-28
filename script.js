@@ -16,7 +16,17 @@ Promise.all([
   fillDropdown('primerName', [...new Set(runs.map(d => d.primer_name))]);
 });
 
-initMap();
+document.addEventListener("DOMContentLoaded", () => {
+  const map = L.map('map').setView([45, -75], 4);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // store globally so the filter function can add markers later
+  window.sampleMap = map;
+});
+
 addAllSamplesToMap();
 
 function fillDropdown(id, values) {
@@ -89,6 +99,7 @@ document.getElementById('filterBtn').addEventListener('click', () => {
     }
   });
 });
+
 
 
 
