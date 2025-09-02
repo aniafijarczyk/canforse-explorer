@@ -2,37 +2,219 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Sample Metadata Filter</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <title>Sample Filter</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
   <style>
     #map { height: 400px; margin-top: 20px; }
-  </style> 
+  </style>
 </head>
 <body>
   <h1>Filter Samples</h1>
 
-  <!-- Dropdowns -->
   <label>Forest Type:</label>
   <select id="forestType"></select><br><br>
 
   <label>Primer Name:</label>
   <select id="primerName"></select><br><br>
 
-  <label>Soil pH min:</label>
-  <input type="number" id="phMin" step="0.1"><br><br>
+  <button id="filterBtn">Filter</button>
+  <button id="clearBtn">Clear</button>
 
-  <button id="filterBtn">Filter Samples</button>
-
-  <h2>Matching Samples</h2>
+  <h2>Results</h2>
   <ul id="results"></ul>
 
-  <h2>Sample Locations</h2>
   <div id="map"></div>
 
-  <!-- Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  
+  <script>
+    let samples = [], runs = [], soils = [];
+    let map, markers;
+
+    // Sample data - replace with your CSV loading
+    samples = [
+      { sample_id: 'S1', forest_type: 'Boreal', latitude: '46.8', longitude: '-71.2' },
+      { sample_id: 'S2', forest_type: 'Temperate', latitude: '45.4', longitude: '-75.7' },
+      { sample_id: 'S3', forest_type: 'Boreal', latitude: '53.5', longitude: '-113.5' }
+    ];
+
+    runs = [
+      { sample_id: 'S1', primer_name: '16S', run_id: 'r1' },
+      { sample_id: 'S1', primer_name: 'ITS', run_id: 'r2' },
+      { sample_id: 'S2', primer_name: '16S', run_id: 'r3' },
+      { sample_id: 'S3', primer_name: 'ITS', run_id: 'r4' }
+    ];
+
+    function fillDropdown(id, values) {
+      console.log('Filling dropdown', id, 'with values:', values);
+      const sel = document.getElementById(id);
+      if (!sel) {
+        console.error('Element not found:', id);
+        return;
+      }
+      sel.innerHTML = '<option value="">-- Any --</option>';
+      values.forEach(v => {
+        sel.innerHTML += '<option value="' + v + '">' + v + '</option>';
+      });
+      console.log('Dropdown filled, innerHTML:', sel.innerHTML);
+    }
+
+    function initMap() {
+      try {
+        console.log('Initializing map...');
+        map = L.map('map').setView([50, -95], 4);
+        console.log('Map created');
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        console.log('Tile layer added');
+        
+        markers = L.layerGroup().addTo(map);
+        console.log('Marker layer added');
+        
+        // Update the map display message
+        document.getElementById('map').style.display = 'block';
+      } catch (error) {
+        console.error('Error initializing map:', error);
+        document.getElementById('map').innerHTML = '<p>Error loading map: ' + error.message + '</p>';
+      }
+    }
+
+    function showSamples(sampleIds) {
+      // Only run if map is initialized
+      if (typeof markers === 'undefined') return;
+      
+      markers.clearLayers();
+      
+      const samplesToShow = sampleIds ? 
+        samples.filter(s => sampleIds.includes(s.sample_id)) : 
+        samples;
+      
+      samplesToShow.forEach(s => {
+        if (s.latitude && s.longitude) {
+          const lat = parseFloat(s.latitude);
+          const lon = parseFloat(s.longitude);
+          if (!isNaN(lat) && !isNaN(lon)) {
+            // Use circle marker instead of regular marker
+            L.circleMarker([lat, lon], {
+              color: '#2c5530',
+              fillColor: '#4a7c59',
+              fillOpacity: 0.8,
+              radius: 8,
+              weight: 2
+            })
+              .bindPopup(s.sample_id + '<br>' + s.forest_type)
+              .addTo(markers);
+          }
+        }
+      });
+    }
+
+    function filterSamples() {
+      const forestType = document.getElementById('forestType').value;
+      const primer = document.getElementById('primerName').value;
+
+      let matching = samples.map(s => s.sample_id);
+
+      if (forestType) {
+        matching = matching.filter(id => {
+          const sample = samples.find(s => s.sample_id === id);
+          return sample && sample.forest_type === forestType;
+        });
+      }
+
+      if (primer) {
+        const primerSamples = runs
+          .filter(r => r.primer_name === primer)
+          .map(r => r.sample_id);
+        matching = matching.filter(id => primerSamples.includes(id));
+      }
+
+      // Show results
+      const list = document.getElementById('results');
+      if (matching.length === 0) {
+        list.innerHTML = '<li>No matches</li>';
+      } else {
+        list.innerHTML = matching.map(id => '<li>' + id + '</li>').join('');
+      }
+
+      showSamples(matching);
+    }
+
+    function clearFilters() {
+      document.getElementById('forestType').value = '';
+      document.getElementById('primerName').value = '';
+      
+      const allIds = samples.map(s => s.sample_id);
+      document.getElementById('results').innerHTML = allIds.map(id => '<li>' + id + '</li>').join('');
+      
+      showSamples();
+    }
+
+    // Wait for page to load
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded');
+      console.log('Samples data:', samples);
+      console.log('Runs data:', runs);
+      
+      const forestTypes = samples.map(s => s.forest_type).filter(f => f);
+      const primers = runs.map(r => r.primer_name).filter(p => p);
+      
+      console.log('Forest types:', forestTypes);
+      console.log('Primers:', primers);
+      
+      fillDropdown('forestType', [...new Set(forestTypes)]);
+      fillDropdown('primerName', [...new Set(primers)]);
+      
+      // Initialize map only if Leaflet is available
+      if (typeof L !== 'undefined') {
+        console.log('Leaflet found, initializing map');
+        initMap();
+      } else {
+        console.log('Leaflet not found, trying to load it');
+        document.getElementById('map').innerHTML = '<p>Loading map...</p>';
+        
+        // Try to initialize map after a delay
+        setTimeout(function() {
+          if (typeof L !== 'undefined') {
+            console.log('Leaflet loaded after delay');
+            initMap();
+          } else {
+            console.log('Leaflet still not available');
+            document.getElementById('map').innerHTML = '<p>Map unavailable. Check if Leaflet CSS/JS loaded correctly.</p>';
+          }
+        }, 2000);
+      }
+      
+      clearFilters();
+      
+      document.getElementById('filterBtn').onclick = filterSamples;
+      document.getElementById('clearBtn').onclick = clearFilters;
+    });
+
+    /*
+    // To use with your CSV files, replace the sample data above with:
+    Promise.all([
+      fetch('data/samples.csv').then(r => r.text()).then(t => Papa.parse(t, {header:true}).data),
+      fetch('data/runs.csv').then(r => r.text()).then(t => Papa.parse(t, {header:true}).data)
+    ]).then(([samp, run]) => {
+      samples = samp.filter(d => d.sample_id);
+      runs = run.filter(d => d.sample_id);
+      
+      const forestTypes = samples.map(s => s.forest_type).filter(f => f);
+      const primers = runs.map(r => r.primer_name).filter(p => p);
+      
+      fillDropdown('forestType', [...new Set(forestTypes)]);
+      fillDropdown('primerName', [...new Set(primers)]);
+      
+      initMap();
+      clearFilters();
+      
+      document.getElementById('filterBtn').onclick = filterSamples;
+      document.getElementById('clearBtn').onclick = clearFilters;
+    });
+    */
+  </script>
 </body>
 </html>
-
