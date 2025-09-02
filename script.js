@@ -1,33 +1,7 @@
 let samples = [], runs = [], soils = [];
 let map, markers;
 
-// Load CSVs
-Promise.all([
-  fetch('data/samples.csv').then(r => r.text()).then(t => Papa.parse(t, {header:true}).data),
-  fetch('data/runs.csv').then(r => r.text()).then(t => Papa.parse(t, {header:true}).data),
-  fetch('data/soil.csv').then(r => r.text()).then(t => Papa.parse(t, {header:true}).data)
-]).then(([samp, run, soil]) => {
-  samples = samp.filter(d => d.sample_id);
-  runs = run.filter(d => d.sample_id);
-  soils = soil.filter(d => d.sample_id);
 
-  // Fill dropdowns
-  fillDropdown('forestType', [...new Set(samples.map(d => d.forest_type))]);
-  fillDropdown('primerName', [...new Set(runs.map(d => d.primer_name))]);
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const map = L.map('map').setView([45, -75], 4);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
-
-  // store globally so the filter function can add markers later
-  window.sampleMap = map;
-});
-
-addAllSamplesToMap();
 
 function fillDropdown(id, values) {
   const sel = document.getElementById(id);
@@ -59,6 +33,34 @@ function addAllSamplesToMap() {
     }
   });
 }
+
+// Load CSVs
+Promise.all([
+  fetch('data/samples.csv').then(r => r.text()).then(t => Papa.parse(t, {header:true}).data),
+  fetch('data/runs.csv').then(r => r.text()).then(t => Papa.parse(t, {header:true}).data),
+  fetch('data/soil.csv').then(r => r.text()).then(t => Papa.parse(t, {header:true}).data)
+]).then(([samp, run, soil]) => {
+  samples = samp.filter(d => d.sample_id);
+  runs = run.filter(d => d.sample_id);
+  soils = soil.filter(d => d.sample_id);
+
+  // Fill dropdowns
+  fillDropdown('forestType', [...new Set(samples.map(d => d.forest_type))]);
+  fillDropdown('primerName', [...new Set(runs.map(d => d.primer_name))]);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const map = L.map('map').setView([45, -75], 4);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // store globally so the filter function can add markers later
+  window.sampleMap = map;
+});
+
+addAllSamplesToMap();
 
 // Filtering
 document.getElementById('filterBtn').addEventListener('click', () => {
@@ -99,6 +101,7 @@ document.getElementById('filterBtn').addEventListener('click', () => {
     }
   });
 });
+
 
 
 
