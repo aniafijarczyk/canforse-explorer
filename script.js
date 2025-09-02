@@ -1,7 +1,7 @@
 let samples = [], runs = [], soils = [];
 let map, markers;
 
-
+initMap();
 
 function fillDropdown(id, values) {
   const sel = document.getElementById(id);
@@ -47,20 +47,10 @@ Promise.all([
   // Fill dropdowns
   fillDropdown('forestType', [...new Set(samples.map(d => d.forest_type))]);
   fillDropdown('primerName', [...new Set(runs.map(d => d.primer_name))]);
+
+  // Now add all samples to the map
+  addAllSamplesToMap();
 });
-
-document.addEventListener("DOMContentLoaded", () => {
-  const map = L.map('map').setView([45, -75], 4);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
-
-  // store globally so the filter function can add markers later
-  window.sampleMap = map;
-});
-
-addAllSamplesToMap();
 
 // Filtering
 document.getElementById('filterBtn').addEventListener('click', () => {
@@ -101,6 +91,7 @@ document.getElementById('filterBtn').addEventListener('click', () => {
     }
   });
 });
+
 
 
 
