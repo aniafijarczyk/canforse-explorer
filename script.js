@@ -1,7 +1,6 @@
 let samples = [], runs = [], soils = [];
 let map, markers;
 
-initMap();
 
 function fillDropdown(id, values) {
   const sel = document.getElementById(id);
@@ -33,6 +32,8 @@ function addAllSamplesToMap() {
     }
   });
 }
+
+initMap();
 
 // Load CSVs
 Promise.all([
@@ -91,6 +92,7 @@ document.getElementById('filterBtn').addEventListener('click', () => {
     }
   });
 });
+
 
 
 
