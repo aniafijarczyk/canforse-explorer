@@ -1,4 +1,10 @@
-sample_id,forest_type,latitude,longitude
-S1,Boreal,46.8,-71.2
-S2,Temperate,45.4,-75.7
-S3,Boreal,53.5,-113.5
+sample_id,site_id,forest_type,latitude,longitude
+S1,S,Temperate,46.8,-71.2
+S2,S,Temperate,46.8,-71.2
+S3,S,Temperate,46.8,-71.2
+B2,B,Boreal,53.5,-113.5
+B3,B,Boreal,53.5,-113.5
+B4,B,Boreal,53.5,-113.5
+A2,A,Temperate,45.4,-75.7
+A3,A,Temperate,45.4,-75.7
+A4,A,Temperate,45.4,-75.7
